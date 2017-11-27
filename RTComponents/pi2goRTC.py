@@ -180,6 +180,7 @@ class pi2goRTC(OpenRTM_aist.DataFlowComponentBase):
 	#	#
 	#	#
 	def onActivated(self, ec_id):
+		#pi2go library setup
 		pi2go.init()
 	
 		return RTC.RTC_OK
@@ -214,18 +215,22 @@ class pi2goRTC(OpenRTM_aist.DataFlowComponentBase):
 	    		if len(d) > 1:
                             pi2go.go(int(d[0]),int(d[1]))#go(LeftSpeed,RightSpeed)
 
+		#Write IRSensor value
 		self._d_IRSensor.data = [pi2go.irLeft(),pi2go.irRight(),pi2go.irCentre()]
 		OpenRTM_aist.setTimestamp(self._d_IRSensor)
 		self._IRSensorOut.write()
 
+		#Write IRLineSensor value
 		self._d_IRLineSensor.data = [pi2go.irLeftLine(),pi2go.irRightLine()]
 		OpenRTM_aist.setTimestamp(self._d_IRLineSensor)
 		self._IRLineSensorOut.write()
 
+		#Write Sonar value
 		self._d_Sonar.data = pi2go.getDistance()
 		OpenRTM_aist.setTimestamp(self._d_Sonar)
 		self._SonarOut.write()
 
+		#Write switch value
 		self._d_Switch.data = pi2go.getSwitch()
 		OpenRTM_aist.setTimestamp(self._d_Switch)
 		self._SwitchOut.write()
