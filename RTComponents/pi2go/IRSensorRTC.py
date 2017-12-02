@@ -199,9 +199,9 @@ class IRSensor(OpenRTM_aist.DataFlowComponentBase):
 
 		if self._IRSensorValueIn.isNew():
     			d = self._IRSensorValueIn.read().data
-			if d[0] == True and d[1] == True and d[2] == True:
-                                speed.append(self._Speed[0])
-				speed.append(self._Speed[0]*-1)
+			if d[0] == False and d[1] == False and d[2] == False:
+				speed.append(self._Speed[0])
+				speed.append(self._Speed[0])
 			elif d[0] == True and d[1] == True and d[2] == False:
 				speed.append(self._Speed[0])
 				speed.append(self._Speed[0])
@@ -210,19 +210,20 @@ class IRSensor(OpenRTM_aist.DataFlowComponentBase):
 				speed.append(self._Speed[0]*-1)
 			elif d[0] == True and d[1] == False and d[2] == False:
 				speed.append(self._Speed[0])
-				speed.append(self._Speed[0]*0.2)
+				speed.append(0)
 			elif d[0] == False and d[1] == True and d[2] == True:
     				speed.append(self._Speed[0]*-1)
 				speed.append(self._Speed[0])
 			elif d[0] == False and d[1] == True and d[2] == False:
-				speed.append(self._Speed[0]*0.2)
+				speed.append(0)
 				speed.append(self._Speed[0])
 			elif d[0] == False and d[1] == False and d[2] == True:
 				speed.append(self._Speed[0])
 				speed.append(self._Speed[0]*-1)
-			elif d[0] == False and d[1] == False and d[2] == False:
-				speed.append(self._Speed[0])
-				speed.append(self._Speed[0])
+			elif d[0] == True and d[1] == True and d[2] == True:
+                                speed.append(self._Speed[0])
+				speed.append(self._Speed[0]*-1)
+
 
 		speed.append(0)
 		speed.append(0)
