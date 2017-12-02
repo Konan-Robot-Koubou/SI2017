@@ -27,13 +27,15 @@
 			- 基本コンポーネント
 			- ゲームパッド入力
 			- ゲームパッド速度指令コンポーネント
+			- ライントレーサー
  +- IO_test		Zumo - Rasperry Pi 間の通信テスト用コンポーネント群
- +- sample		作例：ライントレーサー
 - Zumo-USB		Zumoロボット内制御プログラム（Micro USBポート経由シリアル通信版，通常はこちらを使用）
 - Zumo-GPIO		Zumoロボット内制御プログラム (GPIOシリアル通信版）
 - CADData		ZumoロボットへのRaspberry Pi マイクロコントローラ搭載用CADデータ
-- Manual.pdf		利用マニュアル
 - ZumoCommunicationProtocol_Manual.pdf  Zumo通信プロトコル解説マニュアルの追加
++- SwitchControl Zumoのコンポーネント郡をスイッチで管理するためのサブシステム郡
+ - ComponentControl.py スイッチの入力でコンポーネントの管理を行うスクリプト
+ - runZumo.py          ComponentControl.pyを起動するためのスクリプト
 これらの，フォルダ，ファイルを利用して，Zumoロボットのアプリケーションソフトウェアの開発が行えます．
 
 以上
