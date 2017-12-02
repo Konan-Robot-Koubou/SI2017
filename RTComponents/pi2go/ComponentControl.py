@@ -20,6 +20,8 @@ class ActiveComp:
 
     def rtshell(self):
         #RTShell Command
+	#rtcon is command which connects two component's terminals
+	#rtcon /IPadress/PC_Name/ComponetA_Name/ComponentA's Terminal /IPadress/PC_Name/ComponetB_Name/ComponentB's Terminal
         os.system("rtcon /localhost/raspberrypi.host_cxt/pi2goRTC0.rtc:SpeedIn /localhost/raspberrypi.host_cxt/IRSensor0.rtc:SpeedOut")#Connect Component
         os.system("rtcon /localhost/raspberrypi.host_cxt/pi2goRTC0.rtc:IRSensor /localhost/raspberrypi.host_cxt/IRSensor0.rtc:IRSensorValue")#Connect Component
         print "Setting Complete"
@@ -29,6 +31,7 @@ class ActiveComp:
 
     def ActiveComp(self):
         #Active component
+	#rtact /IPadress/PC_Name/Component_Name
         os.system("rtact /localhost/raspberrypi.host_cxt/IRSensor0.rtc /localhost/raspberrypi.host_cxt/pi2goRTC0.rtc")
 
 
@@ -36,6 +39,7 @@ class DeactiveComp:
     def Deactive_Comp(self):
         #Deact Component
         print "Deactive start"
+	#rtdeact /IPadress/PC_Name/Componet_Name
         os.system("rtdeact /localhost/raspberrypi.host_cxt/pi2goRTC0.rtc /localhost/raspberrypi.host_cxt/IRSensor0.rtc")
 
         #Wait time
@@ -43,6 +47,7 @@ class DeactiveComp:
 
     def exit_Comp(self):
         #Component Exit
+	#rtexit /IPadress/PC_Name/Component_Name
         os.system("rtexit /localhost/raspberrypi.host_cxt/pi2goRTC0.rtc")
         os.system("rtexit /localhost/raspberrypi.host_cxt/IRSensor0.rtc")
         sleep(3)
@@ -52,8 +57,7 @@ class DeactiveComp:
 class check:
     def ActivateCheck(self):
         #Check status is Active
-	#Raspberry Piの中で動いているプロセスから、同じコンポーネントが動いていないかを確認する
-	#同じ名前のプロセスがなければret = 1、もしあればret = 0を返す
+	#If component runs in process of Raspberry Pi,ret is 0
 	ret = subprocess.call("ps -ax | grep pi2goRTC.py | grep -v grep",shell=True)
 	print ret
 	return ret == 1
