@@ -40,8 +40,16 @@ pi2govel_spec = ["implementation_id", "pi2goVel",
 		 "max_instance",      "1",
 		 "language",          "Python",
 		 "lang_type",         "SCRIPT",
-		 "conf.default.Speed", "60",
-		 "conf.__widget__.Speed", "text",
+		 "conf.default.VXGain", "-1.0",
+		 "conf.default.VAGain", "1.0",
+		 "conf.default.PivotButtonN", "0",
+		 "conf.default.VXAxisN", "1",
+		 "conf.default.VAAxisN", "0",
+		 "conf.__widget__.VXGain", "text",
+		 "conf.__widget__.VAGain", "text",
+		 "conf.__widget__.PivotButtonN", "text",
+		 "conf.__widget__.VXAxisN", "text",
+		 "conf.__widget__.VAAxisN", "text",
 		 ""]
 # </rtc-template>
 
@@ -80,16 +88,38 @@ class pi2goVel(OpenRTM_aist.DataFlowComponentBase):
 
 		# initialize of configuration-data.
 		# <rtc-template block="init_conf_param">
-
 		"""
 		
-		 - Name:  Speed
-		 - DefaultValue: 60
+		 - Name:  VXGain
+		 - DefaultValue: 1.0
 		"""
-		self._Speed = [60]
+		self._VXGain = [-1.0]
+		"""
+		
+		 - Name:  VAGain
+		 - DefaultValue: 1.0
+		"""
+		self._VAGain = [1.0]
+		"""
+		
+		 - Name:  PivotButtonN
+		 - DefaultValue: 0
+		"""
+		self._PivotButtonN = [0]
+		"""
+		
+		 - Name:  VXAxisN
+		 - DefaultValue: 0
+		"""
+		self._VXAxisN = [1]
+		"""
+		
+		 - Name:  VAAxisN
+		 - DefaultValue: 1
+		"""
+		self._VAAxisN = [0]
 
-		# </rtc-template>
-
+		self.Pivot=False
 
 
 	##
@@ -197,49 +227,36 @@ class pi2goVel(OpenRTM_aist.DataFlowComponentBase):
 	#	#
 	#	#
 	def onExecute(self, ec_id):
-	    	speed = []
+	    vx = 0
+		va = 0
+		vy = 0
 		if self._AxisIn.isNew():
 		##Convert Input value of analogstick to pi2go speed
 			d=self._AxisIn.read().data
-			if d[1] < 0:
-                            if d[0] < 0 and d[0] > -1:
-                                speed.append(self._Speed[0]*(1-d[0]*d[1]))
-                                speed.append(self._Speed[0]*d[1]*-1)
-                            if d[0] > 0 and d[0] < 1:
-                                speed.append(self._Speed[0]*d[1]*-1)
-				speed.append(self._Speed[0]*(1+d[0]*d[1]))
-			elif d[1] == 0:
-                            speed.append(self._Speed[0]*d[0])
-                            speed.append(self._Speed[0]*d[0]*-1)
-                        elif d[1] > 0:
-                            if d[0] < 0 and d[0] > -1:
-                                speed.append(self._Speed[0]*(1+d[0]*d[1])*-1)
-                                speed.append(self._Speed[0]*d[1]*-1)
-                            if d[0] > 0 and d[0] < 1:
-                                speed.append(self._Speed[0]*d[1]*-1)
-				speed.append(self._Speed[0]*(1-d[0]*d[1])*-1)
-			
+			x=d[self._VXAxisN[0]]
+            a=d[self._VAAxisN[0]]
+            vx=x*self._VXGain[0]
+            if self.Pivot:
+				va=-a*self._VAGain[0]
+            else:
+				va=a*self._VAGain[0]*x
+			if x==0 and a!=0:
+				va=a*self._VXGain[0]
 
 		elif self._ButtonIn.isNew():
 			d = self._ButtonIn.read().data
 			if d[0] == 1:
-				speed.append(int(self._Speed[0]))
-				speed.append(int(self._Speed[0]))
+				vx = 1
 			elif d[1] == 1:
-				speed.append(int(self._Speed[0]))
-				speed.append(int(self._Speed[0]*-1))
+				va = 1
 			elif d[2] == 1:
-				speed.append(int(self._Speed[0]*-1))
-				speed.append(int(self._Speed[0]*-1))
+				vx = -1
 			elif d[3] == 1:
-				speed.append(int(self._Speed[0]*-1))
-				speed.append(int(self._Speed[0]))
-			else:
-				speed.append(int(0))
-				speed.append(int(0))
-		self._d_SpeedOut.data = speed
-		OpenRTM_aist.setTimestamp(self._d_SpeedOut)
-        	self._SpeedOutOut.write()			
+				va = -1
+
+		self._d_Velocity.data=RTC.Velocity2D(vx,vy,va)
+		OpenRTM_aist.setTimestamp(self._d_Velocity)
+        self._VelocityOut.write()		
 
 		return RTC.RTC_OK
 

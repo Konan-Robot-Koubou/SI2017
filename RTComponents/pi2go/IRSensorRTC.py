@@ -40,12 +40,6 @@ irsensor_spec = ["implementation_id", "IRSensor",
 		 "max_instance",      "1", 
 		 "language",          "Python", 
 		 "lang_type",         "SCRIPT",
-		 "conf.default.Speed", "60",
-
-		 "conf.__widget__.Speed", "text",
-
-         "conf.__type__.Speed", "int",
-
 		 ""]
 # </rtc-template>
 
@@ -79,12 +73,6 @@ class IRSensor(OpenRTM_aist.DataFlowComponentBase):
 
 		# initialize of configuration-data.
 		# <rtc-template block="init_conf_param">
-		"""
-		
-		 - Name:  Speed
-		 - DefaultValue: 60
-		"""
-		self._Speed = [60]
 		
 		# </rtc-template>
 
@@ -195,42 +183,36 @@ class IRSensor(OpenRTM_aist.DataFlowComponentBase):
 		#
 		#
 	def onExecute(self, ec_id):
-    		speed = []
+
+		vx=0
+		vy=0
+		va=0
 
 		if self._IRSensorValueIn.isNew():
-    			d = self._IRSensorValueIn.read().data
-			if d[0] == False and d[1] == False and d[2] == False:
-				speed.append(self._Speed[0])
-				speed.append(self._Speed[0])
+			d = self._IRSensorValueIn.read().data
+			if d[0] == True and d[1] == True and d[2] ==True:
+				vx = -1
 			elif d[0] == True and d[1] == True and d[2] == False:
-				speed.append(self._Speed[0])
-				speed.append(self._Speed[0])
+				va = -1
 			elif d[0] == True and d[1] == False and d[2] == True:
-				speed.append(self._Speed[0])
-				speed.append(self._Speed[0]*-1)
-			elif d[0] == True and d[1] == False and d[2] == False:
-				speed.append(self._Speed[0])
-				speed.append(0)
+				vx = 1
 			elif d[0] == False and d[1] == True and d[2] == True:
-    				speed.append(self._Speed[0]*-1)
-				speed.append(self._Speed[0])
+				va = 1
+			elif d[0] == True and d[1] == False and d[2] == False:
+				vx = 0.3
+				va = -0.9
 			elif d[0] == False and d[1] == True and d[2] == False:
-				speed.append(0)
-				speed.append(self._Speed[0])
+				vx = -0.3
+				va = -0.9
 			elif d[0] == False and d[1] == False and d[2] == True:
-				speed.append(self._Speed[0])
-				speed.append(self._Speed[0]*-1)
-			elif d[0] == True and d[1] == True and d[2] == True:
-                                speed.append(self._Speed[0])
-				speed.append(self._Speed[0]*-1)
-
-
-		speed.append(0)
-		speed.append(0)
-
-		self._d_SpeedOut.data = speed
+				vx = 0.3
+				va = 0.9
+			else:
+				vx = 1
+			
+		self._d_SpeedOut.data = RTC.Velocity2D(vx,vy,va)
 		OpenRTM_aist.setTimestamp(self._d_SpeedOut)
-                self._SpeedOutOut.write()			
+        self._SpeedOutOut.write()			
 
 	
 		return RTC.RTC_OK

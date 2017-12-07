@@ -18,7 +18,7 @@ sys.path.append(".")
 import RTC
 import OpenRTM_aist
 
-
+ #転輪幅(メートル)
 # Import Service implementation class
 # <rtc-template block="service_impl">
 
@@ -42,6 +42,7 @@ pi2gortc_spec = ["implementation_id", "pi2goRTC",
 		 "language",          "Python", 
 		 "lang_type",         "SCRIPT",
 		 "conf.default.Speed", "60",
+		"conf.__widget__.Speed", "text",
 		 ""]
 # </rtc-template>
 
@@ -95,7 +96,14 @@ class pi2goRTC(OpenRTM_aist.DataFlowComponentBase):
 
 		# initialize of configuration-data.
 		# <rtc-template block="init_conf_param">
+		"""
 		
+		 - Name:  Speed
+		 - DefaultValue: 60
+		"""
+		self._Speed = [60]
+
+		# </rtc-template>
 		# </rtc-template>
 
 
@@ -211,12 +219,16 @@ class pi2goRTC(OpenRTM_aist.DataFlowComponentBase):
 	#	#
 	def onExecute(self, ec_id):
 		if self._SpeedInIn.isNew():
-	    		d=self._SpeedInIn.read().data
-	    		if len(d) > 1:
-                            pi2go.go(int(d[0]),int(d[1]))#go(LeftSpeed,RightSpeed)
+			# 速度入力
+            data=self._VelocityInIn.read().data
+            VX=data.vx
+            VA=data.va/3
+            VL=(VX-VA)*self._Speed[0]
+            VR=(VX+VA)*self._Speed[0]
+            pi2go.go(int(VL),int(VR))#go(LeftSpeed,RightSpeed)
 
 		#Write IRSensor value
-		self._d_IRSensor.data = [pi2go.irLeft(),pi2go.irRight(),pi2go.irCentre()]
+		self._d_IRSensor.data = [pi2go.irLeft(),pi2go.irCentre(),pi2go.irRight()]
 		OpenRTM_aist.setTimestamp(self._d_IRSensor)
 		self._IRSensorOut.write()
 
