@@ -77,7 +77,7 @@ class pi2goVel(OpenRTM_aist.DataFlowComponentBase):
 		"""
 		self._ButtonIn = OpenRTM_aist.InPort("Button", self._d_Button)
 
-		self._d_SpeedOut = RTC.TimedDoubleSeq(RTC.Time(0,0),[])
+		self._d_SpeedOut = RTC.TimedVelocity2D(RTC.Time(0,0),[])
 		"""
 		"""
 		self._SpeedOutOut = OpenRTM_aist.OutPort("SpeedOut", self._d_SpeedOut)

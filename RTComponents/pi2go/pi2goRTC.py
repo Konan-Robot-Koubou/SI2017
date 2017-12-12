@@ -60,7 +60,7 @@ class pi2goRTC(OpenRTM_aist.DataFlowComponentBase):
 	def __init__(self, manager):
 		OpenRTM_aist.DataFlowComponentBase.__init__(self, manager)
 
-		self._d_SpeedIn = RTC.TimedDoubleSeq(RTC.Time(0,0),[])
+		self._d_SpeedIn = RTC.TimedVelocity2D(RTC.Time(0,0),[])
 		"""
 		"""
 		self._SpeedInIn = OpenRTM_aist.InPort("SpeedIn", self._d_SpeedIn)
@@ -220,12 +220,12 @@ class pi2goRTC(OpenRTM_aist.DataFlowComponentBase):
 	def onExecute(self, ec_id):
 		if self._SpeedInIn.isNew():
 			# 速度入力
-            data=self._VelocityInIn.read().data
-            VX=data.vx
-            VA=data.va/3
-            VL=(VX-VA)*self._Speed[0]
-            VR=(VX+VA)*self._Speed[0]
-            pi2go.go(int(VL),int(VR))#go(LeftSpeed,RightSpeed)
+			d=self._VelocityInIn.read().data
+			VX=d.vx
+			VA=d.va/3
+			VL=(VX-VA)*self._Speed[0]
+			VR=(VX+VA)*self._Speed[0]
+			pi2go.go(int(VL),int(VR))#go(LeftSpeed,RightSpeed)
 
 		#Write IRSensor value
 		self._d_IRSensor.data = [pi2go.irLeft(),pi2go.irCentre(),pi2go.irRight()]

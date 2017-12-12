@@ -62,7 +62,7 @@ class IRSensor(OpenRTM_aist.DataFlowComponentBase):
 		"""
 		self._IRSensorValueIn = OpenRTM_aist.InPort("IRSensorValue", self._d_IRSensorValue)
 
-		self._d_SpeedOut = RTC.TimedDoubleSeq(RTC.Time(0,0),[])
+		self._d_SpeedOut = RTC.TimedVelocity2D(RTC.Time(0,0),[])
 		"""
 		"""
 		self._SpeedOutOut = OpenRTM_aist.OutPort("SpeedOut", self._d_SpeedOut)
@@ -212,7 +212,7 @@ class IRSensor(OpenRTM_aist.DataFlowComponentBase):
 			
 		self._d_SpeedOut.data = RTC.Velocity2D(vx,vy,va)
 		OpenRTM_aist.setTimestamp(self._d_SpeedOut)
-        self._SpeedOutOut.write()			
+        	self._SpeedOutOut.write()			
 
 	
 		return RTC.RTC_OK
