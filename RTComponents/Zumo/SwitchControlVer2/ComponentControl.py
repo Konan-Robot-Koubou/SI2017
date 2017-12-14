@@ -3,21 +3,26 @@
 import RPi.GPIO as GPIO
 from time import sleep
 import subprocess as sp
+import sys
+
+#第一引数はRTコンポーネント群の結線情報が含まれるrtsysファイルのパス,第二引数はIPアドレス
+args = sys.argv
 
 sleep(10)
 switchInputPin = 18 #Input switch value
 LEDOutputPin = 17 #Output LED
 LEDErr = 10 #Error
-rtsysFile = "/home/pi/sys.rtsys" #rtコンポーネント群の結線情報
+rtsysFile = args[0] #rtコンポーネント群の結線情報
+adress = args[1]#IPアドレス
 
 class check:
 	def ActivateCheck(self):
 	#Active状態のコンポーネントの有無を調べる
-                return sp.call("rtls -lR /localhost | grep Active | grep -v grep",shell=True)==1
+                return sp.call("rtls -lR /" + adress + " | grep Active | grep -v grep",shell=True)==1
 	
 	def ErrorCheck(self):
 	#Error状態のコンポーネントの有無を調べる
-		return sp.call("rtls -lR /localhost | grep Error | grep -v grep",shell=True)==0
+		return sp.call("rtls -lR /" + adress + " | grep Error | grep -v grep",shell=True)==0
 
 class LED:
 	def turnOn(self):
@@ -67,10 +72,10 @@ try:
 				sp.call("rtstop " + rtsysFile,shell=True) #コンポーネントをdeactive
 			elif check.ErrorCheck() == True and check.ActivateCheck() == True:
 				#エラー状態のコンポーネントの名前を取得する
-				ret = sp.Popen("rtls -lR /localhost | grep Error | grep -v grep",shell=True,stdout=sp.PIPE, stderr=sp.PIPE).communicate()
+				ret = sp.Popen("rtls -lR /" + adress + " | grep Error | grep -v grep",shell=True,stdout=sp.PIPE, stderr=sp.PIPE).communicate()
 				compName = ret[0].split(" ")[13].replace("\n","")
 				#エラー状態のコンポーネントをリセットする
-				sp.call("rtreset /localhost/raspberrypi.host_cxt/" + compName,shell=True)
+				sp.call("rtreset /" + adress + "/raspberrypi.host_cxt/" + compName,shell=True)
 				LED.turnErrOff()
 				LED.turnOn()
 				sp.call("rtstart " + rtsysFile,shell=True) #コンポーネントをActive

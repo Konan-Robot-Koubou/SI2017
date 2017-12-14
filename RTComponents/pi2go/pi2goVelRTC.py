@@ -234,12 +234,10 @@ class pi2goVel(OpenRTM_aist.DataFlowComponentBase):
 		##Convert Input value of analogstick to pi2go speed
 			d=self._AxisIn.read().data
 			x=d[self._VXAxisN[0]]
-            a=d[self._VAAxisN[0]]
-            vx=x*self._VXGain[0]
-            if self.Pivot:
-				va=-a*self._VAGain[0]
-            else:
-				va=a*self._VAGain[0]*x
+		        a=d[self._VAAxisN[0]]
+		        vx=x*self._VXGain[0]
+
+			va=a*self._VAGain[0]*x
 			if x==0 and a!=0:
 				va=a*self._VXGain[0]
 
@@ -256,7 +254,7 @@ class pi2goVel(OpenRTM_aist.DataFlowComponentBase):
 
 		self._d_Velocity.data=RTC.Velocity2D(vx,vy,va)
 		OpenRTM_aist.setTimestamp(self._d_Velocity)
-        self._VelocityOut.write()		
+        	self._VelocityOut.write()		
 
 		return RTC.RTC_OK
 
