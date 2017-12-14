@@ -12,8 +12,8 @@ sleep(10)
 switchInputPin = 18 #Input switch value
 LEDOutputPin = 17 #Output LED
 LEDErr = 10 #Error
-rtsysFile = args[0] #rtコンポーネント群の結線情報
-adress = args[1]#IPアドレス
+rtsysFile = args[1] #rtコンポーネント群の結線情報
+adress = args[2]#IPアドレス
 
 class check:
 	def ActivateCheck(self):

@@ -17,8 +17,8 @@ if [ "$_IP" ]; then
 
 fi
 
-##ここにコンポーネントの管理スクリプトを置く
-sh /home/pi/ComponentControl.py /home/pi/sys.rtsys localhost
+##ここにコンポーネントの管理スクリプトを動かすシェルスクリプトを置く
+sh startComponentControl.sh
 ##ここにコンポーネントを起動するシェルスクリプトを置く
 sh ComponentStart.sh
 
