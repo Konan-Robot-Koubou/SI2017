@@ -11,6 +11,7 @@
 """
 import sys
 import time
+import math
 import pi2go 
 sys.path.append(".")
 
@@ -19,6 +20,9 @@ import RTC
 import OpenRTM_aist
 
  #転輪幅(メートル)
+tread = 65*0.001
+hftr = tread/2
+
 # Import Service implementation class
 # <rtc-template block="service_impl">
 
@@ -102,6 +106,7 @@ class pi2goRTC(OpenRTM_aist.DataFlowComponentBase):
 		 - DefaultValue: 60
 		"""
 		self._Speed = [60]
+
 
 		# </rtc-template>
 		# </rtc-template>
@@ -220,11 +225,20 @@ class pi2goRTC(OpenRTM_aist.DataFlowComponentBase):
 	def onExecute(self, ec_id):
 		if self._SpeedInIn.isNew():
 			# 速度入力
-			d=self._VelocityInIn.read().data
+			d=self._SpeedInIn.read().data
 			VX=d.vx
-			VA=d.va/3
-			VL=(VX-VA)*self._Speed[0]
-			VR=(VX+VA)*self._Speed[0]
+			VA=d.va
+			VL=(VX-hftr*VA)*self._Speed[0]
+			VR=(VX+hftr*VA)*self._Speed[0]
+			#最大値(100)を超えた場合エラーとなるため，置換
+			if VL > 100:
+                            VL = 100
+                        if VL < -100:
+                            VL = -100
+                        if VR > 100:
+                            VR = 100
+                        if VR < -100:
+                            VR = -100
 			pi2go.go(int(VL),int(VR))#go(LeftSpeed,RightSpeed)
 
 		#Write IRSensor value
