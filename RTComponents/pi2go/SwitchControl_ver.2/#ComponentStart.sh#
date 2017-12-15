@@ -1,0 +1,6 @@
+#!/bin/sh
+
+sleep 10
+##ここから起動するコンポーネント群を書いていく
+sudo python /home/pi/pi2go/pi2goRTC.py &
+sudo python /home/pi/pi2go/IRSensor.py &
