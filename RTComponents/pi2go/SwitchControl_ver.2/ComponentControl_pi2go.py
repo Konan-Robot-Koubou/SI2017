@@ -42,6 +42,8 @@ check = check()
 LED.turnOff()
 os.system("echo y | rtm-naming") # ネーミングサーバをたてる
 sleep(20)
+
+pi2go.init()
 sp.call("rtresurrect " + rtsysFile,shell=True) # 結線情報を復元
 
 try:
