@@ -184,31 +184,21 @@ class IRSensor(OpenRTM_aist.DataFlowComponentBase):
 		#
 	def onExecute(self, ec_id):
 
-		vx=0
+		vx=1
 		vy=0
 		va=0
 
 		if self._IRSensorValueIn.isNew():
 			d = self._IRSensorValueIn.read().data
-			if d[0] == True and d[1] == True and d[2] ==True:
-				vx = -1
-			elif d[0] == True and d[1] == True and d[2] == False:
-				va = -1
-			elif d[0] == True and d[1] == False and d[2] == True:
-				vx = 1
-			elif d[0] == False and d[1] == True and d[2] == True:
-				va = 1
-			elif d[0] == True and d[1] == False and d[2] == False:
-				vx = 0.3
-				va = -0.9
-			elif d[0] == False and d[1] == True and d[2] == False:
-				vx = -0.3
-				va = -0.9
-			elif d[0] == False and d[1] == False and d[2] == True:
-				vx = 0.3
-				va = 0.9
-			else:
-				vx = 1
+			if d[0] = True:
+				vx = vx - 0.2
+				va = va + 0.2
+			if d[1] = True:
+				vx = -0.6
+			if d[2] = True:
+				vx = vx - 0.2
+				va = va - 0.2
+				
 			
 		self._d_SpeedOut.data = RTC.Velocity2D(vx,vy,va)
 		OpenRTM_aist.setTimestamp(self._d_SpeedOut)
